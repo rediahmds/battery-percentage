@@ -1,5 +1,9 @@
+#!/usr/bin/env python
+
 import psutil
+import matplotlib.pyplot as plt
 from time import sleep
+from collections import deque
 
 def get_battery_percentage():
     try:
@@ -10,21 +14,34 @@ def get_battery_percentage():
         return None
 
 def main():
-    UPDATE_INTERVAL = 60
-    countdown = UPDATE_INTERVAL
-    battery_percentage = get_battery_percentage()
+    update_interval = 10  # Adjust the update interval in seconds
+    countdown = update_interval
+    history_length = 30  # Number of data points to keep in the history
+    battery_history = deque(maxlen=history_length)
+
+    plt.ion()  # Turn on interactive mode for real-time plotting
+    fig, ax = plt.subplots()
 
     while True:
+        battery_percentage = get_battery_percentage()
 
         if battery_percentage is not None:
-            print(f"Battery Percentage: {battery_percentage}% | Next update in {countdown}s", end="\r", flush=True)
+            battery_history.append(battery_percentage)
+
+            ax.clear()
+            ax.plot(range(len(battery_history)), battery_history)
+            ax.set_title("Battery Percentage Over Time")
+            ax.set_xlabel("Time (Update Intervals)")
+            ax.set_ylabel("Battery Percentage")
+            plt.pause(0.1)
+
+            print(f"Battery Percentage: {battery_percentage}% | Next Update in: {countdown}s", end="\r", flush=True)
 
         sleep(1)
-        countdown -= 1  # Adjust the sleep interval as needed
+        countdown -= 1
 
         if countdown <= 0:
-            countdown = UPDATE_INTERVAL
-            battery_percentage = get_battery_percentage()
+            countdown = update_interval
 
 if __name__ == "__main__":
     main()
