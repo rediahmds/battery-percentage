@@ -10,13 +10,21 @@ def get_battery_percentage():
         return None
 
 def main():
+    UPDATE_INTERVAL = 60
+    countdown = UPDATE_INTERVAL
+    battery_percentage = get_battery_percentage()
+
     while True:
-        battery_percentage = get_battery_percentage()
 
         if battery_percentage is not None:
-            print(f"Battery Percentage: {battery_percentage}%")
+            print(f"Battery Percentage: {battery_percentage}% | Next update in {countdown}s", end="\r", flush=True)
 
-        sleep(60)  # Adjust the sleep interval as needed
+        sleep(1)
+        countdown -= 1  # Adjust the sleep interval as needed
+
+        if countdown <= 0:
+            countdown = UPDATE_INTERVAL
+            battery_percentage = get_battery_percentage()
 
 if __name__ == "__main__":
     main()
