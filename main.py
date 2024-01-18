@@ -4,7 +4,6 @@ import psutil
 from time import sleep
 from collections import deque
 
-
 def get_battery_percentage():
     try:
         battery = psutil.sensors_battery()
@@ -13,12 +12,10 @@ def get_battery_percentage():
         print(f"Error: {e}")
         return None
 
-
 def draw_histogram(battery_percentage):
     bar_length = int(battery_percentage / 5)
-    histogram = "[" + "=" * bar_length + " " * (20 - bar_length) + "]"
+    histogram = '[' + '=' * bar_length + ' ' * (20 - bar_length) + ']'
     return histogram
-
 
 def main():
     update_interval = 10  # Adjust the update interval in seconds
@@ -33,18 +30,13 @@ def main():
             battery_history.append(battery_percentage)
 
             histogram = draw_histogram(battery_percentage)
-            print(
-                f"Battery Percentage: {battery_percentage}% | Histogram: {histogram} | Next Update in: {countdown}s",
-                end="\r",
-                flush=True,
-            )
+            print(f"Battery Percentage: {battery_percentage}% | Histogram: {histogram} | Next Update in: {countdown}s", end="\r", flush=True)
 
         sleep(1)
         countdown -= 1
 
         if countdown <= 0:
             countdown = update_interval
-
 
 if __name__ == "__main__":
     main()
